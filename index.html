@@ -1,0 +1,352 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Project Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .nft-card {
+            transition: all 0.3s ease;
+        }
+        
+        .nft-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .emoji-picker {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+        
+        .emoji-option {
+            cursor: pointer;
+            font-size: 24px;
+            transition: transform 0.2s;
+        }
+        
+        .emoji-option:hover {
+            transform: scale(1.2);
+        }
+
+        .copy-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            transform: scale(1.05);
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            padding: 12px 20px;
+            background-color: #4c1d95;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mr-2{margin-right:0.5rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.block{display:block}.flex{display:flex}.grid{display:grid}.h-16{height:4rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-full{height:100%}.w-16{width:4rem}.w-48{width:12rem}.w-5{width:1.25rem}.w-full{width:100%}.max-w-6xl{max-width:72rem}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-between{justify-content:space-between}.gap-6{gap:1.5rem}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-gray-300{--tw-border-opacity:1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.bg-gray-200{--tw-bg-opacity:1;background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))}.bg-indigo-700{--tw-bg-opacity:1;background-color:rgb(67 56 202 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-green-400{--tw-gradient-from:#4ade80 var(--tw-gradient-from-position);--tw-gradient-to:rgb(74 222 128 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-purple-600{--tw-gradient-from:#9333ea var(--tw-gradient-from-position);--tw-gradient-to:rgb(147 51 234 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-blue-500{--tw-gradient-to:#3b82f6 var(--tw-gradient-to-position)}.to-indigo-600{--tw-gradient-to:#4f46e5 var(--tw-gradient-to-position)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/80{color:rgb(255 255 255 / 0.8)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-indigo-800:hover{--tw-bg-opacity:1;background-color:rgb(55 48 163 / var(--tw-bg-opacity, 1))}.hover\:opacity-90:hover{opacity:0.9}.focus\:border-purple-500:focus{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-purple-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(168 85 247 / var(--tw-ring-opacity, 1))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:p-8{padding:2rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">NFT Project Tracker</h1>
+            <p class="text-white/80">Keep track of new and interesting NFT projects</p>
+        </header>
+        
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Add New NFT Project</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+                    <input id="project-name" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Project Description</label>
+                    <textarea id="project-description" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition" rows="3"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Project Link</label>
+                    <input id="project-link" type="url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition" placeholder="https://">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select PFP Emoji</label>
+                    <div class="emoji-picker p-3 border border-gray-300 rounded-lg">
+                        <div class="emoji-option">🐵</div>
+                        <div class="emoji-option">🐱</div>
+                        <div class="emoji-option">🐶</div>
+                        <div class="emoji-option">🦊</div>
+                        <div class="emoji-option">🦁</div>
+                        <div class="emoji-option">🐯</div>
+                        <div class="emoji-option">🐺</div>
+                        <div class="emoji-option">🦄</div>
+                        <div class="emoji-option">🐲</div>
+                        <div class="emoji-option">👾</div>
+                        <div class="emoji-option">🤖</div>
+                        <div class="emoji-option">👽</div>
+                        <div class="emoji-option">🎭</div>
+                        <div class="emoji-option">🎨</div>
+                        <div class="emoji-option">🎮</div>
+                        <div class="emoji-option">💎</div>
+                    </div>
+                    <div class="mt-2 flex items-center">
+                        <span class="mr-2">Selected:</span>
+                        <span id="selected-emoji" class="text-2xl">🐵</span>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button id="add-project" class="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium rounded-lg hover:opacity-90 transition">Add Project</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white/90 backdrop-blur rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold">Your NFT Projects</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-600">Storage used:</span>
+                    <div class="w-48 h-4 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="storage-bar" class="h-full bg-gradient-to-r from-green-400 to-blue-500" style="width: 3.81e-05%;"></div>
+                    </div>
+                    <span id="storage-text" class="text-sm font-medium">0.0% (2 bytes)</span>
+                </div>
+            </div>
+            
+            <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            
+            <div id="no-projects" class="text-center py-12 text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                </svg>
+                <p class="text-xl font-medium">No projects added yet</p>
+                <p class="mt-2">Add your first NFT project using the form above</p>
+            </div>
+        </div>
+        
+        <div class="text-center text-white/80 text-sm">
+            <p>Storage information: Local storage has a limit of approximately 5-10MB per domain.</p>
+            <p class="mt-1">This should allow you to store hundreds of NFT projects.</p>
+        </div>
+    </div>
+
+    <!-- Copy Code Button -->
+    <button id="copy-code-btn" class="copy-button px-4 py-3 bg-indigo-700 text-white font-medium rounded-full shadow-lg hover:bg-indigo-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        Copy Full Code
+    </button>
+
+    <!-- Copy Toast Notification -->
+    <div id="copy-toast" class="copy-toast">
+        Code copied to clipboard! ✅
+    </div>
+
+    <!-- Hidden textarea for copying -->
+    <textarea id="code-to-copy" style="position: absolute; left: -9999px; top: 0;" readonly=""></textarea>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            let selectedEmoji = '🐵';
+            let projects = JSON.parse(localStorage.getItem('nftProjects')) || [];
+            
+            // DOM elements
+            const projectNameInput = document.getElementById('project-name');
+            const projectDescriptionInput = document.getElementById('project-description');
+            const projectLinkInput = document.getElementById('project-link');
+            const selectedEmojiElement = document.getElementById('selected-emoji');
+            const addProjectButton = document.getElementById('add-project');
+            const projectsContainer = document.getElementById('projects-container');
+            const noProjectsElement = document.getElementById('no-projects');
+            const storageBar = document.getElementById('storage-bar');
+            const storageText = document.getElementById('storage-text');
+            const copyCodeBtn = document.getElementById('copy-code-btn');
+            const copyToast = document.getElementById('copy-toast');
+            const codeToTextarea = document.getElementById('code-to-copy');
+            
+            // Set up emoji picker
+            document.querySelectorAll('.emoji-option').forEach(emoji => {
+                emoji.addEventListener('click', function() {
+                    selectedEmoji = this.textContent;
+                    selectedEmojiElement.textContent = selectedEmoji;
+                });
+            });
+            
+            // Add project button click handler
+            addProjectButton.addEventListener('click', function() {
+                const name = projectNameInput.value.trim();
+                const description = projectDescriptionInput.value.trim();
+                const link = projectLinkInput.value.trim();
+                
+                if (!name) {
+                    alert('Please enter a project name');
+                    return;
+                }
+                
+                const newProject = {
+                    id: Date.now(),
+                    name,
+                    description,
+                    link,
+                    emoji: selectedEmoji,
+                    date: new Date().toISOString()
+                };
+                
+                projects.push(newProject);
+                saveProjects();
+                renderProjects();
+                updateStorageInfo();
+                
+                // Clear form
+                projectNameInput.value = '';
+                projectDescriptionInput.value = '';
+                projectLinkInput.value = '';
+                selectedEmoji = '🐵';
+                selectedEmojiElement.textContent = selectedEmoji;
+            });
+            
+            // Function to save projects to localStorage
+            function saveProjects() {
+                localStorage.setItem('nftProjects', JSON.stringify(projects));
+            }
+            
+            // Function to render projects
+            function renderProjects() {
+                if (projects.length === 0) {
+                    projectsContainer.innerHTML = '';
+                    noProjectsElement.classList.remove('hidden');
+                } else {
+                    noProjectsElement.classList.add('hidden');
+                    
+                    projectsContainer.innerHTML = projects.map(project => `
+                        <div class="nft-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <div class="p-5">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full mr-3">
+                                        <span class="text-2xl">${project.emoji}</span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">${escapeHtml(project.name)}</h3>
+                                </div>
+                                
+                                <p class="text-gray-600 mb-4 line-clamp-3">${escapeHtml(project.description)}</p>
+                                
+                                <div class="flex justify-between items-center">
+                                    <a href="${escapeHtml(project.link)}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium">Visit Project</a>
+                                    <button class="delete-btn text-sm text-red-500 hover:text-red-700" data-id="${project.id}">Delete</button>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-2 text-xs text-gray-500">
+                                Added on ${new Date(project.date).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // Add delete event listeners
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const id = parseInt(this.getAttribute('data-id'));
+                            projects = projects.filter(project => project.id !== id);
+                            saveProjects();
+                            renderProjects();
+                            updateStorageInfo();
+                        });
+                    });
+                }
+            }
+            
+            // Function to update storage info
+            function updateStorageInfo() {
+                const totalSize = new Blob([JSON.stringify(projects)]).size;
+                const maxSize = 5 * 1024 * 1024; // 5MB as a conservative estimate
+                const percentUsed = Math.min(100, (totalSize / maxSize) * 100);
+                
+                storageBar.style.width = `${percentUsed}%`;
+                storageText.textContent = `${percentUsed.toFixed(1)}% (${formatSize(totalSize)})`;
+                
+                // Change color based on usage
+                if (percentUsed > 80) {
+                    storageBar.className = 'h-full bg-gradient-to-r from-yellow-400 to-red-500';
+                } else if (percentUsed > 50) {
+                    storageBar.className = 'h-full bg-gradient-to-r from-yellow-300 to-yellow-500';
+                } else {
+                    storageBar.className = 'h-full bg-gradient-to-r from-green-400 to-blue-500';
+                }
+            }
+            
+            // Helper function to format size
+            function formatSize(bytes) {
+                if (bytes < 1024) return bytes + ' bytes';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            // Helper function to escape HTML
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+            
+            // Copy code functionality
+            copyCodeBtn.addEventListener('click', function() {
+                // Get the entire HTML document as a string
+                const fullCode = document.documentElement.outerHTML;
+                
+                // Set the textarea value to the full code
+                codeToTextarea.value = fullCode;
+                
+                // Select the textarea content
+                codeToTextarea.select();
+                
+                // Copy the selected text
+                document.execCommand('copy');
+                
+                // Show toast notification
+                copyToast.classList.add('show');
+                
+                // Hide toast after 3 seconds
+                setTimeout(() => {
+                    copyToast.classList.remove('show');
+                }, 3000);
+            });
+            
+            // Initial render
+            renderProjects();
+            updateStorageInfo();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93e1924e46e08e80',t:'MTc0Njk2NTQwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+</body></html>
